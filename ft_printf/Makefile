@@ -6,7 +6,7 @@
 #    By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/14 14:20:54 by arabiai           #+#    #+#              #
-#    Updated: 2022/11/16 17:57:43 by arabiai          ###   ########.fr        #
+#    Updated: 2023/01/15 20:08:11 by arabiai          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,6 +18,9 @@ COLOUR_BLUE=\033[0;34m
 COLOUR_END=\033[0m
 COLOUR_YELLOW=\033[0;33m
 
+bold := $(shell tput bold)
+sgr0 := $(shell tput sgr0)
+
 SOURCES = ft_printf.c ft_printf_utils.c\
 
 CC = cc
@@ -26,10 +29,10 @@ CFLAGS = -Wall -Wextra -Werror
 
 RM = rm -rf
 
-ECHO1 = @echo "$(COLOUR_GREEN)Compiled all files successfully!$(COLOUR_END)"
-ECHO2 = @echo "$(COLOUR_YELLOW)Library $(NAME) created!$(COLOUR_END)"
-ECHO3 = @echo "$(COLOUR_RED)Object files removed!$(COLOUR_END)"
-ECHO4 = @echo "$(COLOUR_RED)Lilibrary $(NAME) removed!$(COLOUR_END)"
+ECHO1 = @echo "$(COLOUR_GREEN)$(bold)Compiled all files successfully!$(sgr0)$(COLOUR_END)"
+ECHO2 = @echo "$(COLOUR_YELLOW)$(bold)the library $(NAME) created successfully!$(sgr0)$(COLOUR_END)"
+ECHO3 = @echo "$(COLOUR_RED)$(bold)Object files removed!$(sgr0)$(COLOUR_END)"
+ECHO4 = @echo "$(COLOUR_RED)$(bold)the liobrary $(NAME) removed!$(sgr0)$(COLOUR_END)"
 
 OBJECTS = $(SOURCES:.c=.o)
 
