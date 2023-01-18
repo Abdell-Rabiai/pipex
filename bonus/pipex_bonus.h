@@ -6,7 +6,7 @@
 /*   By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 16:42:19 by arabiai           #+#    #+#             */
-/*   Updated: 2023/01/16 13:31:46 by arabiai          ###   ########.fr       */
+/*   Updated: 2023/01/18 18:10:01 by arabiai          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,25 @@ char	*return_the_first_word(const char *s, char c);
 char	**ft_split(char const *s, char c);
 char	*ft_strjoin(char const *s1, char const *s2);
 
+char	**get_envpath(char **envp);
+char	*get_command_path(char **splited_paths, char **command);
+
+/**processss*/
+void	first_child_process(char **argv, int pipe_ends[2], char **envp);
+void	last_child_process(char **argv, int ac, char **envp);
+void	inter_process(char *argv_cmd, int pipe_ends[2], char **envp);
+void	open_file_in_firstchild(char **argv, char **strs, char **splited_paths);
+void	closepipe_waitall(int pipe_ends[2], pid_t pid);
+
+/*bonus**/
+int		check_heredoc(char *str);
+int		ft_strncmp(char *s1, char *s2, size_t n);
+char	*get_next_line(int fd);
+void	here_doc_pipex(char *limiter);
+void	main_pipex(int ac, char **argv, char **envp, int pipe_ends[2]);
+void	redirect_process(int pipe_ends[2]);
+
+/**erroars*/
 void	error_handling(int x);
 void	errorfile_free(int x, char **strs, char **splited_paths, char *cmd);
 

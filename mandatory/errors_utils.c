@@ -6,7 +6,7 @@
 /*   By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/14 20:45:23 by arabiai           #+#    #+#             */
-/*   Updated: 2023/01/17 17:19:55 by arabiai          ###   ########.fr       */
+/*   Updated: 2023/01/18 18:18:45 by arabiai          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ void	errorfile_free(int x, char **strs, char **splited_paths, char *cmd)
 	}
 	else if (x == 3)
 	{
-		ft_printf("ERROR : %s command not found : All commands not available \n", cmd);
+		ft_printf("ERROR : %s command not found : ");
+		ft_printf("All commands not available \n", cmd);
 		ft_free_split(strs);
 		ft_free_split(splited_paths);
 		exit(EXIT_FAILURE);

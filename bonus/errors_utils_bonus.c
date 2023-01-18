@@ -6,11 +6,26 @@
 /*   By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/14 20:45:23 by arabiai           #+#    #+#             */
-/*   Updated: 2023/01/16 13:31:14 by arabiai          ###   ########.fr       */
+/*   Updated: 2023/01/18 17:46:56 by arabiai          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
+
+void	inter_process(char *argv_cmd, int pipe_ends[2], char **envp)
+{
+	char	*path;
+	char	**strs;
+	char	**splited_splited_paths;
+
+	splited_splited_paths = get_envpath(envp);
+	strs = ft_split(argv_cmd, ' ');
+	path = get_command_path(splited_splited_paths, strs);
+	close(pipe_ends[0]);
+	dup2(pipe_ends[1], STDOUT_FILENO);
+	execve(path, strs, envp);
+	exit(EXIT_SUCCESS);
+}
 
 void	error_handling(int x)
 {

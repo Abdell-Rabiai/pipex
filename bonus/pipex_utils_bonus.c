@@ -5,104 +5,68 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/12 18:43:14 by arabiai           #+#    #+#             */
-/*   Updated: 2023/01/16 13:31:57 by arabiai          ###   ########.fr       */
+/*   Created: 2023/01/18 18:03:11 by arabiai           #+#    #+#             */
+/*   Updated: 2023/01/18 18:16:45 by arabiai          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
 
-int	ft_how_many_words(const char *s, char c)
+void	open_file_in_firstchild(char **argv, char **strs, char **splited_paths)
 {
-	int	i;
+	int	fd_in;
 
-	i = 0;
-	while (*s)
+	if (check_heredoc(argv[1]) == 1)
 	{
-		while (*s && *s == c)
-			s++;
-		if (*s)
-			i++;
-		while (*s && *s != c)
-			s++;
+		here_doc_pipex(argv[2]);
+		fd_in = open("file_stdout", O_RDONLY);
 	}
-	return (i);
+	else
+	{
+		fd_in = open(argv[1], O_RDONLY);
+	}
+	if (fd_in < 0)
+		errorfile_free(0, strs, splited_paths, "no_use");
+	dup2(fd_in, STDIN_FILENO);
+	close(fd_in);
 }
 
-char	**ft_free_split(char **strings)
-{
-	int	i;
-
-	i = 0;
-	while (strings[i] != 0)
-	{
-		free(strings[i]);
-		i++;
-	}
-	free(strings);
-	return (NULL);
-}
-
-int	ft_get_length_of_word(const char *s, char c)
-{
-	int	i;
-
-	i = 0;
-	while (*s && *s == c)
-		s++;
-	while (*s && *s != c)
-	{
-		i++;
-		s++;
-	}
-	return (i);
-}
-
-char	*return_the_first_word(const char *s, char c)
+void	main_pipex(int ac, char **argv, char **envp, int pipe_ends[2])
 {
 	int		i;
-	int		length;
-	char	*word;
+	pid_t	pid;
 
-	i = 0;
-	length = ft_get_length_of_word(s, c);
-	word = (char *)malloc(sizeof(char) * length + 1);
-	if (!word)
-		return (NULL);
-	while (i < length)
+	i = 1 + check_heredoc(argv[1]);
+	while (i < ac - 1)
 	{
-		word[i] = s[i];
-		i++;
-	}
-	word[i] = '\0';
-	return (word);
-}
-
-char	**ft_split(const char *s, char c)
-{
-	char	**strings;
-	int		i;
-
-	i = 0;
-	if (!s)
-		return (NULL);
-	strings = (char **)malloc(sizeof(char *) * (ft_how_many_words(s, c) + 1));
-	if (!strings)
-		return (NULL);
-	while (*s)
-	{
-		while (*s && *s == c)
-			s++;
-		if (*s)
+		if (pipe(pipe_ends) == -1)
+			error_handling(1);
+		pid = fork();
+		if (pid == -1)
+			error_handling(2);
+		else if (pid == 0)
 		{
-			strings[i] = return_the_first_word(s, c);
-			if (!strings[i])
-				return (ft_free_split(strings));
-			i++;
+			if (i == 1 || (check_heredoc(argv[1]) && i == 2))
+				first_child_process(argv, pipe_ends, envp);
+			else if (i == ac - 2)
+				last_child_process(argv, ac, envp);
+			inter_process(argv[i], pipe_ends, envp);
 		}
-		while (*s && *s != c)
-			s++;
+		wait(NULL);
+		redirect_process(pipe_ends);
+		i++;
 	}
-	strings[i] = 0;
-	return (strings);
+	closepipe_waitall(pipe_ends, pid);
+}
+
+void	closepipe_waitall(int pipe_ends[2], pid_t pid)
+{
+	if (pid != 0)
+	{
+		close(pipe_ends[1]);
+		close(pipe_ends[0]);
+		while (wait(NULL) != -1)
+		{
+		}
+	}
 }

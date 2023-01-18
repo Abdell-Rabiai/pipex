@@ -6,7 +6,7 @@
 /*   By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/23 13:28:55 by arabiai           #+#    #+#             */
-/*   Updated: 2023/01/17 17:25:26 by arabiai          ###   ########.fr       */
+/*   Updated: 2023/01/18 18:23:36 by arabiai          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ char	*get_command_path(char **paths, char **main_cmd)
 		if (access(str, F_OK) == 0)
 			break ;
 		i++;
-		// free(str);
+		free(str);
 	}
 	if (paths[i] == NULL)
 		return (free(cmd),
@@ -94,10 +94,6 @@ void	child1_process(char **argv, int pipe_ends[2], char **envp)
 	exit(EXIT_SUCCESS);
 }
 
-// void lek(){
-// 	system("leaks pipex");
-// }
-
 int	main(int ac, char **argv, char **envp)
 {
 	pid_t	pid;
@@ -112,7 +108,7 @@ int	main(int ac, char **argv, char **envp)
 	if (pid == -1)
 		error_handling(2);
 	if (pid == 0)
-		child_process(argv, pipe_ends, envp); // execve != close
+		child_process(argv, pipe_ends, envp);
 	pid1 = fork();
 	if (pid1 == 0)
 		child1_process(argv, pipe_ends, envp);

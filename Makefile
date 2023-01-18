@@ -6,7 +6,7 @@
 #    By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/12/23 12:06:44 by arabiai           #+#    #+#              #
-#    Updated: 2023/01/16 17:21:47 by arabiai          ###   ########.fr        #
+#    Updated: 2023/01/18 18:01:38 by arabiai          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,7 @@ sgr0 := $(shell tput sgr0)
 SOURCES = mandatory/pipex_main.c mandatory/pipex_utils.c mandatory/errors_utils.c \
 
 BONUS_SOURCES = bonus/pipex_main_bonus.c bonus/pipex_utils_bonus.c bonus/errors_utils_bonus.c \
+bonus/bonus_utils.c bonus/ft_split.c Get_next_line/get_next_line.c Get_next_line/get_next_line_utils.c \
 
 CC = cc
 
@@ -56,7 +57,7 @@ pipe_exc : mandatory/pipex.h
 	$(CC) $(CFLAGS) mandatory/pipex_main.c libftprintf.a library -o $(NAME)
 	$(ECHO2)
 
-bonus : $(BONUS_OBJECTS) libftprintf bonus/pipex_bonus.h
+bonus : $(BONUS_OBJECTS) libftprintf bonus/pipex_bonus.h Get_next_line/get_next_line.h
 	$(ECHO1_B)
 	ar rcs bonus_library $(BONUS_OBJECTS)
 	$(CC) $(CFLAGS) bonus/pipex_main_bonus.c libftprintf.a bonus_library -o $(BONUS_NAME)
@@ -70,7 +71,9 @@ clean :
 	$(ECHO3)
 
 fclean : clean
-	$(RM) $(NAME) $(BONUS_NAME) library bonus_library libftprintf.a && cd ft_printf && make fclean
+	$(RM) $(NAME) $(BONUS_NAME) library bonus_library libftprintf.a
+	cd ft_printf && make fclean
+	cd Get_next_line && rm -rf *.o
 	$(ECHO4)
 
 re : fclean all
