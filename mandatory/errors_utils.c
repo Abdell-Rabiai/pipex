@@ -6,7 +6,7 @@
 /*   By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/14 20:45:23 by arabiai           #+#    #+#             */
-/*   Updated: 2023/01/19 12:39:43 by arabiai          ###   ########.fr       */
+/*   Updated: 2023/01/19 17:35:38 by arabiai          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,10 @@ void	error_handling(int x)
 void	errorfile_free(int x, char **strs, char **splited_paths, char *cmd)
 {
 	if (x == 0)
+	{
 		ft_printf("EROOR : opening the infile\n");
+		exit(EXIT_FAILURE);
+	}
 	else if (x == 1)
 		ft_printf("EROOR : opening the outfile\n");
 	else if (x == 2)
@@ -38,8 +41,8 @@ void	errorfile_free(int x, char **strs, char **splited_paths, char *cmd)
 	}
 	else if (x == 3)
 	{
-		ft_printf("ERROR : %s command not found : ");
-		ft_printf("All commands not available \n", cmd);
+		ft_printf("ERROR : %s command not found : ", cmd);
+		ft_printf("All commands not available \n");
 		ft_free_split(strs);
 		ft_free_split(splited_paths);
 		exit(EXIT_FAILURE);

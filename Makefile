@@ -6,7 +6,7 @@
 #    By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/12/23 12:06:44 by arabiai           #+#    #+#              #
-#    Updated: 2023/01/19 14:45:35 by arabiai          ###   ########.fr        #
+#    Updated: 2023/01/19 16:42:52 by arabiai          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -73,7 +73,8 @@ clean :
 fclean : clean
 	$(RM) $(NAME) $(BONUS_NAME) library bonus_library libftprintf.a
 	cd ft_printf && make fclean
-	cd Get_next_line && rm -rf *.o
+	cd Get_next_line && $(RM) *.o
+	$(RM) pipex.dSYM pipexbonus.dSYM
 	$(ECHO4)
 
 re : fclean all
