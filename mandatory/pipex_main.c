@@ -6,7 +6,7 @@
 /*   By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/23 13:28:55 by arabiai           #+#    #+#             */
-/*   Updated: 2023/01/19 18:05:40 by arabiai          ###   ########.fr       */
+/*   Updated: 2023/01/19 19:28:07 by arabiai          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,12 +65,14 @@ void	child_process(char **argv, int pipe_ends[2], char **envp, pid_t pid)
 	if (fd_in < 0)
 	{
 		close(pid);
+		ft_printf("HOOOK\n");
 		errorfile_free(0, strs, splited_paths, "no_use");
 	}
 	path = get_command_path(splited_paths, strs, pid);
 	close(pipe_ends[0]);
 	dup2(fd_in, STDIN_FILENO);
 	dup2(pipe_ends[1], STDOUT_FILENO);
+	close(pipe_ends[1]);
 	close(fd_in);
 	execve(path, strs, envp);
 	exit(EXIT_SUCCESS);
@@ -95,6 +97,7 @@ void	child1_process(char **argv, int pipe_ends[2], char **envp, pid_t pid)
 	close(pipe_ends[1]);
 	dup2(fd_out, STDOUT_FILENO);
 	dup2(pipe_ends[0], STDIN_FILENO);
+	close(pipe_ends[0]);
 	close(fd_out);
 	execve(path, strs, envp);
 	exit(EXIT_SUCCESS);
@@ -117,7 +120,7 @@ int	main(int ac, char **argv, char **envp)
 		child_process(argv, pipe_ends, envp, pid);
 	pid1 = fork();
 	if (pid1 == 0)
-		child1_process(argv, pipe_ends, envp, pid);
+		child1_process(argv, pipe_ends, envp, pid1);
 	close(pipe_ends[1]);
 	close(pipe_ends[0]);
 	while (wait(NULL) != -1)
