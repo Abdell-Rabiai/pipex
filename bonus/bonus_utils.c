@@ -6,7 +6,7 @@
 /*   By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 13:34:25 by arabiai           #+#    #+#             */
-/*   Updated: 2023/01/19 16:23:19 by arabiai          ###   ########.fr       */
+/*   Updated: 2023/01/19 16:34:57 by arabiai          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,56 @@ void	here_doc_pipex(char *limiter)
 	free(lim);
 }
 
-void	redirect_process(int pipe_ends[2])
+char	*ft_strjoin(const char *s1, const char *s2)
 {
-	close(pipe_ends[1]);
-	dup2(pipe_ends[0], STDIN_FILENO);
-	close(pipe_ends[0]);
+	char	*strjoin;
+	size_t	i;
+
+	i = 0;
+	if (!s1 || !s2)
+		return (NULL);
+	strjoin = (char *)malloc(sizeof(char)
+			* (ft_strlen(s1) + ft_strlen(s2) + 1));
+	if (!strjoin)
+		return (NULL);
+	while (i < ft_strlen(s1))
+	{
+		strjoin[i] = s1[i];
+		i++;
+	}
+	while (i < ft_strlen(s1) + ft_strlen(s2))
+	{
+		strjoin[i] = s2[i - ft_strlen(s1)];
+		i++;
+	}
+	strjoin[i] = '\0';
+	return (strjoin);
 }
+
+char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
+{
+	char	*hay;
+	char	*nee;
+	size_t	i;
+	size_t	j;
+
+	if ((!haystack && !len))
+		return (NULL);
+	hay = (char *)haystack;
+	nee = (char *)needle;
+	i = 0;
+	j = 0;
+	if (nee[j] == '\0')
+		return (hay);
+	while (hay[i] != '\0' && i < len)
+	{
+		j = 0;
+		while (nee[j] == hay[i + j] && hay[i + j] != '\0' && (i + j) < len)
+			j++;
+		if (nee[j] == '\0')
+			return (hay + i);
+		i++;
+	}
+	return (0);
+}
+

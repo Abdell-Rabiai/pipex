@@ -6,11 +6,51 @@
 /*   By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 18:03:11 by arabiai           #+#    #+#             */
-/*   Updated: 2023/01/19 16:18:56 by arabiai          ###   ########.fr       */
+/*   Updated: 2023/01/19 16:34:09 by arabiai          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
+
+char	**get_envpath(char **envp)
+{
+	int	i;
+
+	i = 0;
+	while (envp[i] != NULL && ft_strnstr(envp[i], "PATH", 4) == NULL)
+		i++;
+	if (envp[i] == NULL)
+		return (NULL);
+	return (ft_split(envp[i] + 5, ':'));
+}
+
+char	*get_command_path(char **splited_paths, char **command)
+{
+	int		i;
+	char	*str;
+	char	*cmd;
+
+	i = 0;
+	cmd = ft_strjoin("/", command[0]);
+	if (splited_paths == NULL)
+		return (free(cmd),
+			errorfile_free(3, command, splited_paths, command[0]), NULL);
+	if (access(command[0], F_OK) == 0 && access(command[0], X_OK) == 0)
+		return (free(cmd), ft_free_split(splited_paths), command[0]);
+	while (splited_paths[i] != NULL)
+	{
+		str = ft_strjoin(splited_paths[i], cmd);
+		if (access(str, F_OK) == 0)
+			break ;
+		i++;
+		free(str);
+	}
+	if (splited_paths[i] == NULL)
+		return (free(cmd),
+			errorfile_free(2, command, splited_paths, command[0]), NULL);
+	else
+		return (free(cmd), ft_free_split(splited_paths), str);
+}
 
 void	open_file_in_firstchild(char **argv, char **strs, char **splited_paths)
 {
@@ -35,33 +75,11 @@ void	open_file_in_firstchild(char **argv, char **strs, char **splited_paths)
 	unlink("temp_file");
 }
 
-void	main_pipex(int ac, char **argv, char **envp, int pipe_ends[2])
+void	redirect_process(int pipe_ends[2])
 {
-	int		i;
-	pid_t	pid;
-
-	i = 2 + check_heredoc(argv[1]);
-	while (i < ac - 1)
-	{
-		if (pipe(pipe_ends) == -1)
-			error_handling(1);
-		pid = fork();
-		if (pid == -1)
-			error_handling(2);
-		else if (pid == 0)
-		{
-			if (i == 2 || (check_heredoc(argv[1]) && i == 3))
-				first_child_process(argv, pipe_ends, envp);
-			else if (i == ac - 2)
-				last_child_process(argv, ac, envp);
-			inter_process(argv[i], pipe_ends, envp);
-		}
-		if (check_heredoc(argv[1]))
-			wait(NULL);
-		redirect_process(pipe_ends);
-		i++;
-	}
-	closepipe_waitall(pipe_ends, pid);
+	close(pipe_ends[1]);
+	dup2(pipe_ends[0], STDIN_FILENO);
+	close(pipe_ends[0]);
 }
 
 void	closepipe_waitall(int pipe_ends[2], pid_t pid)

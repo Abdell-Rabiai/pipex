@@ -6,7 +6,7 @@
 /*   By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 16:42:19 by arabiai           #+#    #+#             */
-/*   Updated: 2023/01/18 18:10:01 by arabiai          ###   ########.fr       */
+/*   Updated: 2023/01/19 16:38:20 by arabiai          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <stdlib.h>
 # include <fcntl.h>
 
+/*utils split join strnsrt next_line*/
 size_t	ft_strlen(const char *str);
 int		ft_printf(const char *string_format, ...);
 char	*ft_strnstr(const char *haystack, const char *needle, size_t len);
@@ -30,7 +31,10 @@ int		ft_get_length_of_word(const char *s, char c);
 char	*return_the_first_word(const char *s, char c);
 char	**ft_split(char const *s, char c);
 char	*ft_strjoin(char const *s1, char const *s2);
+int		ft_strncmp(char *s1, char *s2, size_t n);
+char	*get_next_line(int fd);
 
+/*commands and envp*/
 char	**get_envpath(char **envp);
 char	*get_command_path(char **splited_paths, char **command);
 
@@ -38,16 +42,15 @@ char	*get_command_path(char **splited_paths, char **command);
 void	first_child_process(char **argv, int pipe_ends[2], char **envp);
 void	last_child_process(char **argv, int ac, char **envp);
 void	inter_process(char *argv_cmd, int pipe_ends[2], char **envp);
+void	main_pipex(int ac, char **argv, char **envp, int pipe_ends[2]);
 void	open_file_in_firstchild(char **argv, char **strs, char **splited_paths);
 void	closepipe_waitall(int pipe_ends[2], pid_t pid);
+void	redirect_process(int pipe_ends[2]);
 
-/*bonus**/
+/*bonu heredoc multiple pipes**/
 int		check_heredoc(char *str);
-int		ft_strncmp(char *s1, char *s2, size_t n);
-char	*get_next_line(int fd);
 void	here_doc_pipex(char *limiter);
 void	main_pipex(int ac, char **argv, char **envp, int pipe_ends[2]);
-void	redirect_process(int pipe_ends[2]);
 
 /**erroars*/
 void	error_handling(int x);

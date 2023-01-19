@@ -6,51 +6,11 @@
 /*   By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/23 13:28:55 by arabiai           #+#    #+#             */
-/*   Updated: 2023/01/19 16:29:03 by arabiai          ###   ########.fr       */
+/*   Updated: 2023/01/19 16:33:58 by arabiai          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
-
-char	**get_envpath(char **envp)
-{
-	int	i;
-
-	i = 0;
-	while (envp[i] != NULL && ft_strnstr(envp[i], "PATH", 4) == NULL)
-		i++;
-	if (envp[i] == NULL)
-		return (NULL);
-	return (ft_split(envp[i] + 5, ':'));
-}
-
-char	*get_command_path(char **splited_paths, char **command)
-{
-	int		i;
-	char	*str;
-	char	*cmd;
-
-	i = 0;
-	cmd = ft_strjoin("/", command[0]);
-	if (splited_paths == NULL)
-		return (free(cmd),
-			errorfile_free(3, command, splited_paths, command[0]), NULL);
-	if (access(command[0], F_OK) == 0 && access(command[0], X_OK) == 0)
-		return (free(cmd), ft_free_split(splited_paths), command[0]);
-	while (splited_paths[i] != NULL)
-	{
-		str = ft_strjoin(splited_paths[i], cmd);
-		if (access(str, F_OK) == 0)
-			break ;
-		i++;
-		free(str);
-	}
-	if (splited_paths[i] == NULL)
-		return (free(cmd),
-			errorfile_free(2, command, splited_paths, command[0]), NULL);
-	else
-		return (free(cmd), ft_free_split(splited_paths), str);
-}
 
 void	first_child_process(char **argv, int pipe_ends[2], char **envp)
 {
@@ -88,6 +48,50 @@ void	last_child_process(char **argv, int ac, char **envp)
 	close(fd_out);
 	execve(path, strs, envp);
 	exit(EXIT_SUCCESS);
+}
+
+void	inter_process(char *argv_cmd, int pipe_ends[2], char **envp)
+{
+	char	*path;
+	char	**strs;
+	char	**splited_splited_paths;
+
+	splited_splited_paths = get_envpath(envp);
+	strs = ft_split(argv_cmd, ' ');
+	path = get_command_path(splited_splited_paths, strs);
+	close(pipe_ends[0]);
+	dup2(pipe_ends[1], STDOUT_FILENO);
+	execve(path, strs, envp);
+	exit(EXIT_SUCCESS);
+}
+
+void	main_pipex(int ac, char **argv, char **envp, int pipe_ends[2])
+{
+	int		i;
+	pid_t	pid;
+
+	i = 2 + check_heredoc(argv[1]);
+	while (i < ac - 1)
+	{
+		if (pipe(pipe_ends) == -1)
+			error_handling(1);
+		pid = fork();
+		if (pid == -1)
+			error_handling(2);
+		else if (pid == 0)
+		{
+			if (i == 2 || (check_heredoc(argv[1]) && i == 3))
+				first_child_process(argv, pipe_ends, envp);
+			else if (i == ac - 2)
+				last_child_process(argv, ac, envp);
+			inter_process(argv[i], pipe_ends, envp);
+		}
+		if (check_heredoc(argv[1]))
+			wait(NULL);
+		redirect_process(pipe_ends);
+		i++;
+	}
+	closepipe_waitall(pipe_ends, pid);
 }
 
 int	main(int ac, char **argv, char **envp)
