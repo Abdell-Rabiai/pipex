@@ -6,7 +6,7 @@
 /*   By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/14 20:45:23 by arabiai           #+#    #+#             */
-/*   Updated: 2023/01/19 16:34:50 by arabiai          ###   ########.fr       */
+/*   Updated: 2023/01/19 16:41:13 by arabiai          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,3 @@ void	errorfile_free(int x, char **strs, char **splited_paths, char *cmd)
 		exit(EXIT_FAILURE);
 	}
 }
-
