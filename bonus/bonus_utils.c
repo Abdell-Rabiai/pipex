@@ -6,7 +6,7 @@
 /*   By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 13:34:25 by arabiai           #+#    #+#             */
-/*   Updated: 2023/01/18 18:17:20 by arabiai          ###   ########.fr       */
+/*   Updated: 2023/01/19 16:23:19 by arabiai          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	ft_strncmp(char *s1, char *s2, size_t n)
 
 int	check_heredoc(char *str)
 {
-	if (ft_strncmp(str, "here_doc", 8) == 0)
+	if (ft_strncmp(str, "here_doc", 8) == 0 && str[8] == '\0')
 		return (1);
 	else
 		return (0);
@@ -41,15 +41,21 @@ void	here_doc_pipex(char *limiter)
 	char	*lim;
 	int		fd;
 
-	fd = open("file_stdout", O_CREAT | O_RDWR | O_TRUNC, 644);
+	fd = open("temp_file", O_CREAT | O_RDWR | O_TRUNC, 777);
+	if (fd < 0)
+		perror("ERROR : here_doc");
 	lim = ft_strjoin(limiter, "\n");
 	while (1)
 	{
 		ft_printf("pipe heredoc> ");
 		str = get_next_line(STDIN_FILENO);
 		if (ft_strncmp(str, lim, ft_strlen(str)) == 0)
+		{
+			free(str);
 			break ;
+		}
 		write(fd, str, ft_strlen(str));
+		free(str);
 	}
 	free(lim);
 }

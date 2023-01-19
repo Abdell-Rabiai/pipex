@@ -6,7 +6,7 @@
 /*   By: arabiai <arabiai@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/14 20:45:23 by arabiai           #+#    #+#             */
-/*   Updated: 2023/01/18 17:46:56 by arabiai          ###   ########.fr       */
+/*   Updated: 2023/01/19 13:07:06 by arabiai          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,16 +41,24 @@ void	error_handling(int x)
 void	errorfile_free(int x, char **strs, char **splited_paths, char *cmd)
 {
 	if (x == 0)
-		ft_printf("EROOR : opening the infile\n");
+		ft_printf("EROOR : infile No sush file or directory\n");
 	else if (x == 1)
-		ft_printf("EROOR : opening the outfile\n");
+		ft_printf("EROOR : outfile No sush file or directory\n");
 	else if (x == 2)
+	{
 		ft_printf("ERROR : %s command not found \n", cmd);
+		ft_free_split(strs);
+		ft_free_split(splited_paths);
+		exit(EXIT_FAILURE);
+	}
 	else if (x == 3)
-		ft_printf("ERROR : %s command not found \n", cmd);
-	ft_free_split(strs);
-	ft_free_split(splited_paths);
-	exit(EXIT_FAILURE);
+	{
+		ft_printf("ERROR : %s command not found : ");
+		ft_printf("All commands not available \n", cmd);
+		ft_free_split(strs);
+		ft_free_split(splited_paths);
+		exit(EXIT_FAILURE);
+	}
 }
 
 char	*ft_strjoin(const char *s1, const char *s2)
